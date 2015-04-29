@@ -19,7 +19,7 @@ ADD app/config/parameters.yml /var/www/chill/app/config/parameters.yml
 #create folders and set permissions
 RUN mkdir -p /var/www/chill/app/cache/prod && \
    chown www-data:www-data /var/www/chill/app/cache/prod && \
-   touch /var/www/chill/app/logs/prod.log && \ 
+   ln -sf /dev/stdout /var/www/chill/app/ && \ 
    chown -R www-data:www-data /var/www/chill/app/logs
 
 #install assets
@@ -31,6 +31,10 @@ ADD apache2.conf /etc/apache2/apache2.conf
 ADD chill.conf /etc/apache2/sites-available/000-default.conf
 ADD entrypoint.sh /var/entrypoint.sh
 RUN chmod o+x /var/entrypoint.sh
+
+#link log to console
+RUN ln -sf /dev/stdout /var/log/apache2/access.log
+RUN ln -sf /dev/stderr /var/log/apache2/error.log
 
 EXPOSE 80
 EXPOSE 443

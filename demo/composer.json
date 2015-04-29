@@ -1,26 +1,35 @@
 {
-    "name": "champs-libres/chill-standard",
-    "license": "GPL-3.0",
+    "name": "chill-project/standard",
+    "license": "AGPL-3.0",
     "type": "project",
     "description": "The Chill distribution",
     "autoload": {
-        "psr-0": { "": "src/", "SymfonyStandard": "app/" }
+        "psr-0": { "": "src/", "SymfonyStandard": "app/"}
     },
-    "minimum-stability": "dev",
+
     "require": {
         "php": "~5.5",
-        "symfony/symfony": "2.5.*",
-        "champs-libres/chill-main": "dev-master",
-        "doctrine/orm": "2.5.*@dev",
-        "doctrine/dbal": "~2.5@dev",
-        "doctrine/common": "~2.4@dev",
-        "doctrine/doctrine-bundle": "~1.2@dev",
+        "symfony/symfony": "~2.5",
+        "chill-project/main": "dev-master",
+        "doctrine/orm": "~2.4",
+        "doctrine/dbal": "~2.5",
+        "doctrine/common": "~2.4",
+        "doctrine/doctrine-bundle": "~1.2",
         "sensio/distribution-bundle": "~3.0",
         "sensio/framework-extra-bundle": "~3.0",
-        "incenteev/composer-parameter-handler": "~2.0"
+        "incenteev/composer-parameter-handler": "~2.0",
+        "doctrine/doctrine-fixtures-bundle": "~2.2@dev",
+        "chill-project/custom-fields": "dev-master@dev",
+        "chill-project/report": "dev-master@dev",
+        "chill-project/person": "dev-master@dev",
+        "chill-project/icpc2": "dev-master@dev",
+        "doctrine/doctrine-migrations-bundle": "dev-master@dev",
+        "doctrine/migrations": "~1.0@dev",
+        "champs-libres/composer-bundle-migration": "~1.0"
     },
    "require-dev": {
-        "sensio/generator-bundle": "~2.3"
+        "sensio/generator-bundle": "~2.3",
+        "fzaninotto/faker": "~1"
     },
     "scripts": {
         "post-root-package-install": [
@@ -32,7 +41,8 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles"
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles",
+            "ComposerBundleMigration\\Composer\\Migrations::synchronizeMigrations"
         ],
         "post-update-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
@@ -40,8 +50,9 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles"
-        ]
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles",
+            "ComposerBundleMigration\\Composer\\Migrations::synchronizeMigrations"
+        ]      
     },
     "config": {
         "bin-dir": "bin"
@@ -57,3 +68,4 @@
         }
     }
 }
+

@@ -27,9 +27,9 @@ RUN mkdir -p /var/www/chill/app/cache/prod && \
    ln -sf /dev/stdout /var/www/chill/app/ && \ 
    chmod 666 /var/www/chill/app/logs
 
-#install assets
-CMD /usr/bin/php /var/www/chill/app/console assets:install --env=prod
-CMD /usr/bin/php /var/www/chill/app/console assetic:dump --env=prod
+#install assets NOT POSSIBLE because pdo_postgres is required !
+#RUN php /var/www/chill/app/console assets:install --env=prod
+#RUN php /var/www/chill/app/console assetic:dump --env=prod
 
 VOLUME /var/www/chill
 

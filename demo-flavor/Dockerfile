@@ -11,7 +11,7 @@ RUN apt-get update && apt-get -y install libicu52 \
    libicu-dev \
    g++ \
    postgresql-server-dev-9.4 
-RUN docker-php-ext-install intl pdo_pgsql zip
+RUN docker-php-ext-install intl pdo_pgsql mbstring
 
 #remove unused packages
 RUN apt-get remove -y wget libicu-dev \
@@ -24,19 +24,10 @@ RUN echo "\
 date.timezone = Europe/Brussels" \
    >> /usr/local/etc/php/php.ini
 
-# install composer
-WORKDIR /tmp
-ADD https://getcomposer.org/installer installer
-RUN cat installer | php \
-   && mv composer.phar /usr/local/bin/composer
-
 #install flavor
-WORKDIR /var/www/chill
-RUN composer create-project chill-project/standard /var/www/chill/ --stability=dev \ 
-   --no-dev --no-install --no-interaction --prefer-dist
+ADD  src/code/. /var/www/chill/
 ADD parameters.yml /var/www/chill/app/config/parameters.yml
 WORKDIR /var/www/chill
-RUN composer install --no-interaction --prefer-dist --no-dev
 
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod u+x /entrypoint.sh

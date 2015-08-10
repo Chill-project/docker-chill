@@ -13,4 +13,8 @@ php /var/www/chill/app/console doctrine:migrations:migrate --no-interaction
 php /var/www/chill/app/console assetic:dump
 php /var/www/chill/app/console assets:install 
 
-php app/console server:run
+#install fixtures
+php /var/www/chill/app/console doctrine:fixtures:load --no-interaction
+
+php app/console server:run 0.0.0.0:8000
+

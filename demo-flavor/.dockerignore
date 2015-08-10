@@ -1,0 +1,5 @@
+src/old_code*
+.gitignore
+src/.gitignore
+.composer.phar
+

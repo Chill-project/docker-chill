@@ -4,17 +4,17 @@
 #set -e
 
 #prepare cache
-php /var/www/chill/app/console cache:clear 
+php /var/www/chill/app/console --env=prod cache:clear
 
 #migrate
-php /var/www/chill/app/console doctrine:migrations:migrate --no-interaction 
+php /var/www/chill/app/console doctrine:migrations:migrate --no-interaction --env=prod
 
 #prepare assets
-php /var/www/chill/app/console assetic:dump
-php /var/www/chill/app/console assets:install 
+php /var/www/chill/app/console --env=prod assets:install
+php /var/www/chill/app/console --env=prod assetic:dump
 
 #install fixtures
-php /var/www/chill/app/console doctrine:fixtures:load --no-interaction
+php /var/www/chill/app/console doctrine:fixtures:load --no-interaction --env=prod
 
-php app/console server:run 0.0.0.0:8000
+php app/console server:run --env=prod 0.0.0.0:8000 
 

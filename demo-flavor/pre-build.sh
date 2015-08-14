@@ -18,10 +18,12 @@ php composer.phar create-project \
    --stability=dev --no-dev --no-install --no-interaction --prefer-dist \
    chill-project/standard ./src/code
 
-echo "downloading latest composer.json file"
-wget -O src/code/composer.json https://github.com/Chill-project/Standard/raw/master/composer.json
+cp parameters.yml src/code/app/config/parameters.yml
+cp composer.json src/code/composer.json
+cp AppKernel.php src/code/app/AppKernel.php
 
 echo "installing depedencies"
+export SYMFONY_ENV=prod
 php composer.phar install \
    --working-dir ./src/code \
    --no-interaction 

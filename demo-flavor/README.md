@@ -136,16 +136,17 @@ symfony/swiftmailer-bundle              v2.3.8             Symfony SwiftmailerBu
 symfony/symfony                         v2.7.3             The Symfony PHP framework
 twig/extensions                         v1.2.0             Common additional features for Twig that do not direct...
 twig/twig                               v1.20.0            Twig, the flexible, fast, and secure template language...
+```
 
 Then, you may exit from the container: 
 
-```
+```bash
 exit
 ```
 
 From your machine, you may build the project locally : 
 
-```
+```bash
 ./build-project-locally.sh
 ```
 

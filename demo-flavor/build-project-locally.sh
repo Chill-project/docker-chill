@@ -19,7 +19,7 @@ php composer.phar create-project \
    chill-project/standard ./src/code
 
 cp parameters.yml src/code/app/config/parameters.yml
-cp composer.json src/code/composer.json
+sed '/{ "type": "composer", "url": "http:\/\/packages.chill.social"}/d' < composer.json > src/code/composer.json
 cp AppKernel.php src/code/app/AppKernel.php
 
 echo "installing depedencies"

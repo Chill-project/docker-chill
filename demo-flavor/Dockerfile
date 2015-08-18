@@ -24,10 +24,23 @@ RUN echo "\
 date.timezone = Europe/Brussels" \
    >> /usr/local/etc/php/php.ini
 
+#install composer
+WORKDIR /tmp
+ADD https://getcomposer.org/installer installer
+RUN cat installer | php \
+   && mv composer.phar /usr/local/bin/composer \
+   && rm /tmp/installer
+
+
 #install flavor
-ADD  src/code/. /var/www/chill/
-ADD parameters.yml /var/www/chill/app/config/parameters.yml
 WORKDIR /var/www/chill
+RUN composer create-project chill-project/standard /var/www/chill \
+   --stability=dev --no-dev --no-install --no-interaction --prefer-dist \
+   --repository-url http://packages.chill.social
+ADD composer.json /var/www/chill/composer.json
+ADD AppKernel.php /var/www/chill/app/AppKernel.php
+ADD parameters.yml /var/www/chill/app/config/parameters.yml
+RUN export SYMFONY_ENV=prod; composer install --no-interaction
 
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod u+x /entrypoint.sh

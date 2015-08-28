@@ -44,9 +44,12 @@ ADD AppKernel.php /var/www/chill/app/AppKernel.php
 ADD parameters.yml /var/www/chill/app/config/parameters.yml
 RUN export SYMFONY_ENV=prod; composer install --no-interaction
 
+RUN ln -sf /dev/stdout /var/www/chill/app/logs/prod.log
+
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod u+x /entrypoint.sh
 
+VOLUME ["/var/www/chill/web/js", "/var/www/chill/web/css", "/var/www/chill/web/bundles"]
 
 ENTRYPOINT /entrypoint.sh
 

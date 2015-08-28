@@ -1,9 +1,7 @@
-Demo flavor
+standard flavor
 ===========
 
-This demo allow to run a demo version of chill software. It uses the built-in php server. The database must be run in a separate container. Fixtures are added on startup.
-
-This container is for testing purpose, and new data are created during startup.
+Standard flavor. Not far to be ready for production.
 
 User created
 ------------
@@ -24,21 +22,30 @@ The password is always 'password' (without quotes).
 Running
 =======
 
-Before running, you must have a `chill\database` container running : 
+Start a database :
 
 ```
-docker run --rm --name=MY_DB_NAME chill/database
+docker run --rm -P --name chill_db_temp chill/database
 ```
 
-Then, you may run the container using :
+Start this container with a link to database:
 
 ```
-docker run --rm --link MY_DB_NAME:db -p 8989:8000 --name=MY_CHILL_NAME MY_TAG
+docker run --link chill_db_temp:db --rm --name chill_fpm standard-fpm
 ```
 
-replacing MY_DB_NAME and MY_TAG by your container's db name and your build tag, respectively. (**note** : the db container **must** be named `db`, as it is hardcoded in parameters.yml).
+The container should start, create migrations files on database, dump assets, then run php-fpm.
 
-Then, you will reach the container by typing `http://localhost:8989` in your browser.
+Then start a nginx container to serve the content :
+
+```
+docker run --rm --link chill_fpm:chill_php --name nginx -p 8080:80 -v `pwd`/nginx.conf:/etc/nginx/nginx.conf --volumes-from chill_fpm nginx
+```
+
+The local nginx.conf file will be used to configure nginx.
+
+Chill should be accessible on http://localhost:8080
+
 
 **note** : the `--rm` tag create removable container, which are completely destroyed when you stop the instance.  
 
@@ -48,8 +55,9 @@ Stopping the containers
 You can stop properly the container using 
 
 ```
-docker stop MY_CHILL_NAME
-docker stop MY_DB_NAME
+docker stop nginx
+docker stop chill_fpm
+docker stop chill_db_temp
 ```
 
 Building

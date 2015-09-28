@@ -1,16 +1,7 @@
-This container create a chill application
+Chill containers for docker
+===========================
 
-usage :
+Chill is a software for social workers. More info: http://chill.social
 
-```
-sudo docker run --link chill-db:db -t -i chill-base
-```
+This repository prepare docker container for running chill.
 
-where chill-db is a postgresql container which have a database called "chill", username "chill" and password "chill", already prepared.
-
-TODO
------
-
-* dump assetic with prod environment 
-* prepare database schema
-* allow to override parameters.yml

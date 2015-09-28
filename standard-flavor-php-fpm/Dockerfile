@@ -42,6 +42,7 @@ RUN composer create-project chill-project/standard /var/www/chill \
 ADD composer.json /var/www/chill/composer.json
 ADD AppKernel.php /var/www/chill/app/AppKernel.php
 ADD parameters.yml /var/www/chill/app/config/parameters.yml
+ADD parameters.php /var/www/chill/app/config/parameters.php
 RUN export SYMFONY_ENV=prod; composer install --no-interaction
 
 RUN ln -sf /dev/stdout /var/www/chill/app/logs/prod.log

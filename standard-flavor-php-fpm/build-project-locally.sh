@@ -19,6 +19,7 @@ php composer.phar create-project \
    chill-project/standard ./src/code
 
 cp parameters.yml src/code/app/config/parameters.yml
+cp paramaters.php src/code/app/config/parameters.php
 sed '/{ "type": "composer", "url": "http:\/\/packages.chill.social"}/d' < composer.json > src/code/composer.json
 cp AppKernel.php src/code/app/AppKernel.php
 

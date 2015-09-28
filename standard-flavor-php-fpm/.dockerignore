@@ -4,3 +4,6 @@ src/.gitignore
 composer.phar
 src/code*
 build-project-locally.sh
+nginx.conf
+README.md
+

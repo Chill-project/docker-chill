@@ -19,35 +19,86 @@ The user's login created are :
 
 The password is always 'password' (without quotes).
 
+Building
+========
+
+```
+docker build --tag=standard-fpm .
+```
+
 Running
 =======
+
+Database
+--------
 
 Start a database :
 
 ```
-docker run --rm -P --name chill_db_temp chill/database
+docker run -P --name chill_db_temp chill/database
 ```
 
-Start this container with a link to database:
+Starting php-fpm
+------------------
+
+Start this container with a link to database :
+
+- if you build on previous step with the tag `standard-fpm`:
 
 ```
-docker run --link chill_db_temp:db --rm --name chill_fpm standard-fpm
+docker run --link chill_db_temp:db --name chill_fpm --env "ADMIN_PASSWORD=pass"  --env "SECRET=i_am_not_secret" standard-fpm
 ```
+
+- if you download from docker hub: 
+
+```
+docker run --link chill_db_temp:db --name chill_fpm chill/standard-fpm
+```
+
+**Notes**
+
+In the commande above: 
+
+- `chill_db_temp` is the database container's name. You may replace this by the name you give to the database name's container ;
+- `db` is the expected database host inside the container. You can override this with adding the ENV parameter `DATABASE_HOST` (Example: `--env "DATABASE_HOST=another_host`)
+- if you want the container to be destroyed on shut-down (all data will be lost), add `--rm` in the command
+
 
 The container should start, create migrations files on database, dump assets, then run php-fpm.
 
-Then start a nginx container to serve the content :
+Nginx
+-----
+
+Then start a nginx container to serve the content. We use the [standard nginx image](https://hub.docker.com/_/nginx/), with an adaptation of the configuration. You can download [our configuration file from the repository](https://raw.githubusercontent.com/Chill-project/docker-chill/master/standard-flavor-php-fpm/nginx.conf)
 
 ```
-docker run --rm --link chill_fpm:chill_php --name nginx -p 8080:80 -v `pwd`/nginx.conf:/etc/nginx/nginx.conf --volumes-from chill_fpm nginx
+# download the sample configuration file
+wget https://raw.githubusercontent.com/Chill-project/docker-chill/master/standard-flavor-php-fpm/nginx.conf
+# run the container
+docker run --link chill_fpm:chill_php --name nginx -p 8080:80 -v `pwd`/nginx.conf:/etc/nginx/nginx.conf --volumes-from chill_fpm nginx
 ```
 
-The local nginx.conf file will be used to configure nginx.
+**Notes**
 
-Chill should be accessible on http://localhost:8080
+- in `--link` argument, `chill_fpm` match the container's name for the php-fpm code (launched the previous step)
+- in `--link` argument, `chill_php` match the expected container name in `nginx.conf` ([see here](https://github.com/Chill-project/docker-chill/blob/master/standard-flavor-php-fpm/nginx.conf#L45)) ;
+- you can replace `--name nginx` by any name you want ;
+- `-v` argument replace the nginx.conf file in the standard nginx image with the custom configuration
+- `--volumes-from` import volumes from the fpm container. This is required to let nginx serve assets (javascripts, images, css, ...)
+- in the command above, the exported port is `8080`. You can stick to port `80` if you prefer by removing `-p 8080:80`
+
+Chill should be accessible on http://localhost:8080 (if you exposed port 8080).
 
 
-**note** : the `--rm` tag create removable container, which are completely destroyed when you stop the instance.  
+Running console commands
+========================
+
+You can run command into a running container using `docker exec`. Here is an example on how to adding fixtures (running `php app/console doctrine:fixtures:load`) :
+
+```
+# assuming that the container's name is 'chill_php':
+docker exec -ti chill_php /usr/local/bin/php /var/www/chill/app/console doctrine:fixtures:load --env=prod
+```
 
 Stopping the containers
 =======================
@@ -55,9 +106,22 @@ Stopping the containers
 You can stop properly the container using 
 
 ```
+# replace eventually by the name you assigned to your containers
 docker stop nginx
 docker stop chill_fpm
 docker stop chill_db_temp
+```
+
+Removing the containers
+========================
+
+This command will destroy your containers **and removing all data from your hard disk**.
+
+```
+# replace eventually by the name you assigned to your containers
+docker rm --volumes nginx
+docker rm --volumes chill_fpm
+docker rm --volumes chill_db_temp
 ```
 
 Building
@@ -92,7 +156,7 @@ If `src/code` is present, the `code` directory will be renamed with current date
 This process is useful to compare packages downloaded during build from [the mirror](http://packages.chill.social) and those which should be downloaded from packagist.
 
 Compare version from packagist and version from mirror
------------------------------------------------------
+======================================================
 
 ```bash
 # run a container with bin/bash

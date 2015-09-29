@@ -24,7 +24,9 @@ RUN echo "\
 date.timezone = Europe/Brussels" \
    >> /usr/local/etc/php/php.ini \
    && echo "\
-ping.path = /ping" \ >> /usr/local/etc/php-fpm.conf
+ping.path = /ping" \ >> /usr/local/etc/php-fpm.conf \
+   && echo "\
+pm.status_path = /status" >> /usr/local/etc/php-fpm.conf
 
 #install composer
 WORKDIR /tmp

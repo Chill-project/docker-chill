@@ -1,23 +1,17 @@
-standard flavor
-===========
+Chill "Standard flavor"
+=======================
 
-Standard flavor. Not far to be ready for production.
+What is Chill ?
+----------------
 
-User created
-------------
+Chill is a software for social workers. It helps them by achieving two goals : 
 
-The user's login created are : 
+- having all information about the person accompanyied on their eyes ;
+- accelerating administrative tasks.
 
-- center a_social
-- center a_administrative
-- center a_direction
-- center b_social 
-- center b_administrative
-- center b_direction
-- multi_center
-- admin
+More information: http://chill.social. Documentation is available at http://docs.chill.social
 
-The password is always 'password' (without quotes).
+This is the standard flavor with main bundleds. This image is not far to be ready for production.
 
 Building
 ========
@@ -63,8 +57,30 @@ In the commande above:
 - `db` is the expected database host inside the container. You can override this with adding the ENV parameter `DATABASE_HOST` (Example: `--env "DATABASE_HOST=another_host`)
 - if you want the container to be destroyed on shut-down (all data will be lost), add `--rm` in the command
 
+The container should start, run migrations files on database, dump assets, then run php-fpm and wait for connections.
 
-The container should start, create migrations files on database, dump assets, then run php-fpm.
+**Available options**
+
+Those environnement variable are available :
+
+- `ADMIN_PASSWORD` (required) : the admin password. 
+- `SECRET` (required) : the secret used by the symfony kernel ([explanations](http://symfony.com/doc/current/reference/configuration/framework.html#secret))
+- `DATABASE_HOST`: The host to connect the database. Default: `db`
+- `DATABASE_NAME`: The database name. Default: `postgres`
+- `DATABASE_USER`: The database username. Default: `postgres`
+- `DATABASE_PASSWORD`: The database password. Default: `postgres`
+- `LOCALE`: The default locale. Default: `fr`
+
+**I want to override templates**
+
+You juste have to [add a volume](https://docs.docker.com/userguide/dockervolumes/) inside the container at `/var/www/chill/app/Resources`. Example : 
+
+```
+docker run --env "ADMIN_PASSWORD=abcde" --env "SECRET=123456" --link chill_db_temp:db --name chill_fpm -v /path/to/my/resources/Resources:/var/www/chill/app/Resources:ro chill/standard-fpm
+```
+
+[Read the full symfony documentation about overriding templates](http://symfony.com/doc/current/book/templating.html#overriding-bundle-templates).
+
 
 Nginx
 -----
@@ -158,6 +174,18 @@ This process is useful to compare packages downloaded during build from [the mir
 Compare version from packagist and version from mirror
 ======================================================
 
+This can be useful if you want to check that you have the last version packaged into your image.
+
+From a running container
+------------------------
+
+```
+docker exec -ti chill_fpm /usr/local/bin/php /usr/local/bin/composer show -i
+```
+
+Override entrypoint / run a specific container
+----------------------------------------------
+
 ```bash
 # run a container with bin/bash
 docker run --rm --entrypoint=/bin/bash -it chill/demo-flavor
@@ -168,7 +196,33 @@ Then, inside the container, print the packages installed :
 composer show -i
 ```
 
-This should print the following :
+Then, you may exit from the container: 
+
+```bash
+exit
+```
+
+Building locally
+----------------
+
+From your machine, you may build the project locally : 
+
+```bash
+./build-project-locally.sh
+```
+
+This will build the project in src/code, removing the repositories from composer.json.
+
+Then, you may see and compare the packages version using composer again : 
+
+```bash
+php composer.phar show -i --working-dir=src/code 
+```
+
+Results
+--------
+
+Both commands should print the following :
 
 ```
 champs-libres/composer-bundle-migration 1.0.6              Move DoctrineMigrations files from installed bundle to...
@@ -209,25 +263,4 @@ symfony/symfony                         v2.7.3             The Symfony PHP frame
 twig/extensions                         v1.2.0             Common additional features for Twig that do not direct...
 twig/twig                               v1.20.0            Twig, the flexible, fast, and secure template language...
 ```
-
-Then, you may exit from the container: 
-
-```bash
-exit
-```
-
-From your machine, you may build the project locally : 
-
-```bash
-./build-project-locally.sh
-```
-
-This will build the project in src/code, removing the repositories from composer.json.
-
-Then, you may see and compare the packages version using composer again : 
-
-```bash
-php composer.phar show -i --working-dir=src/code 
-```
-
 

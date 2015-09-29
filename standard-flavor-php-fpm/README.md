@@ -92,13 +92,13 @@ Then start a nginx container to serve the content. We use the [standard nginx im
 # download the sample configuration file
 wget https://raw.githubusercontent.com/Chill-project/docker-chill/master/standard-flavor-php-fpm/nginx.conf
 # run the container
-docker run --link chill_fpm:chill_php --name nginx -p 8080:80 -v `pwd`/nginx.conf:/etc/nginx/nginx.conf --volumes-from chill_fpm nginx
+docker run --link chill_fpm:fpm --name nginx -p 8080:80 -v `pwd`/nginx.conf:/etc/nginx/nginx.conf --volumes-from chill_fpm nginx
 ```
 
 **Notes**
 
-- in `--link` argument, `chill_fpm` match the container's name for the php-fpm code (launched the previous step)
-- in `--link` argument, `chill_php` match the expected container name in `nginx.conf` ([see here](https://github.com/Chill-project/docker-chill/blob/master/standard-flavor-php-fpm/nginx.conf#L45)) ;
+- in `--link` argument, `chill-fpm` match the container's name for the php-fpm code (launched the previous step)
+- in `--link` argument, `fpm` match the expected container name in `nginx.conf` ([see here](https://github.com/Chill-project/docker-chill/blob/master/standard-flavor-php-fpm/nginx.conf#L45)) ;
 - you can replace `--name nginx` by any name you want ;
 - `-v` argument replace the nginx.conf file in the standard nginx image with the custom configuration
 - `--volumes-from` import volumes from the fpm container. This is required to let nginx serve assets (javascripts, images, css, ...)

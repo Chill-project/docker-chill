@@ -69,6 +69,7 @@ Those environnement variable are available :
 - `DATABASE_NAME`: The database name. Default: `postgres`
 - `DATABASE_USER`: The database username. Default: `postgres`
 - `DATABASE_PASSWORD`: The database password. Default: `postgres`
+- `DATABASE_PORT`: The database port. Default: `5432`
 - `LOCALE`: The default locale. Default: `fr`
 
 **I want to override templates**

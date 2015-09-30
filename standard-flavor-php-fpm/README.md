@@ -46,7 +46,7 @@ docker run --link chill_db_temp:db --name chill_fpm --env "ADMIN_PASSWORD=pass" 
 - if you download from docker hub: 
 
 ```
-docker run --link chill_db_temp:db --name chill_fpm chill/standard-fpm
+docker run --link chill_db_temp:db -env "ADMIN_PASSWORD=pass"  --env "SECRET=i_am_not_secret" --name chill_fpm chill/standard-fpm
 ```
 
 **Notes**
@@ -113,8 +113,8 @@ Running console commands
 You can run command into a running container using `docker exec`. Here is an example on how to adding fixtures (running `php app/console doctrine:fixtures:load`) :
 
 ```
-# assuming that the container's name is 'chill_php':
-docker exec -ti chill_php /usr/local/bin/php /var/www/chill/app/console doctrine:fixtures:load --env=prod
+# assuming that the container's name is 'chill_fpm':
+docker exec -ti chill_fpm /usr/local/bin/php /var/www/chill/app/console doctrine:fixtures:load --env=prod
 ```
 
 Stopping the containers

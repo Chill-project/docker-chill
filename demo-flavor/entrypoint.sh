@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #immediatly exit if a command fails:
-#set -e
+set -e
 
 #prepare cache
 php /var/www/chill/app/console --env=prod cache:clear
